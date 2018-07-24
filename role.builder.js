@@ -63,7 +63,6 @@ module.exports =
     
     chooseTargetConstruction: function(creep) {
         
-        //could check if I have a priority construct in queue, and if not then perform below
         if(Memory.flags.expansionFlags.length == 0){
             let targetConstruction = creep.pos.findClosestByRange(FIND_CONSTRUCTION_SITES);
     
@@ -73,6 +72,7 @@ module.exports =
             }
         }
         else{
+            
             _.forEach(Memory.flags.expansionFlags, function(flagName) {
                let flagObject = Game.flags[flagName]; 
                if(Game.rooms[flagObject.pos.roomName] != undefined){

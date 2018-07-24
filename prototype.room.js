@@ -120,8 +120,10 @@ Room.prototype.chooseNextCreep = function () {
 
 
             case "BEGINNER_STATE":
-                
-                if ( (creepCounts["staticMiners"] < this.memory.creepLimits["staticMiners"] 
+                if ( this.memory.creepLimits["warriors"] > 0 ){
+                    creepType = "warrior";
+                }
+                else if ( (creepCounts["staticMiners"] < this.memory.creepLimits["staticMiners"] 
                         && creepCounts["staticMiners"] <= creepCounts["transporters"]  )
                    || lowestMiner.ticksToLive < (MINER_BUILD_TICKS + lowestMiner.memory.ticksToSource) 
                         && creepCounts["staticMiners"] <= creepCounts["staticMiners"] + 1)
@@ -268,7 +270,12 @@ Room.prototype.updateCreepLimits = function (){
             this.memory.creepLimits["staticMiners"] = numOfSources;
         }
         else{
+            // NEW METHOD FOR REMOTE SPAWNS //
             
+            
+            
+            
+            // OLD CODE BELOW //
             let creepsPerRoom = _.sum(Memory.flags.remoteHarvestFlags, name => Game.flags[name].minersNeeded()) / roomsWithStorage.length;
 
             if(creepsPerRoom > 0 && creepsPerRoom < 1){ //if there is less than one creep per room, decide which room has to spawn it by using Game.time

@@ -14,13 +14,14 @@
 
 
 'use strict';
-var MemoryManager = require('memoryManagement');
+const MemoryManager = require('memoryManagement');
 require('prototype.room');
 require('prototype.creep');
 require('prototype.structure');
 require('creepStateController');
 require('prototype.Flag');
 
+const statTracker = require('screeps-stats');
 const profiler = require('screeps-profiler');
 
 //uncomment below to enable profiler again (small overhead cost)
@@ -31,7 +32,6 @@ module.exports.loop = function () {
         //delete old objects out of memory
         MemoryManager.garbageCollection();
         
-        //MemoryManager.createNewPath( Game.getObjectById("5b2563167402c80a9b82e04c").pos, Game.flags["Flag5"].pos, "StorageToFlag");
         
         //run rooms
         _.forEach(Game.rooms, room => room.run());
@@ -49,15 +49,9 @@ module.exports.loop = function () {
         if(Game.time%25 == 0){
             console.log(" <br><hr> ");
         }
+        
+        //Grafan Support
+        Memory.stats = {};
+        _.forEach(Game.rooms, room => statTracker.getStats(room));
     });
 }
-//Optimize code using simultaneous actions
-// E.G. have creep transfer to an extension, and on the same tick move to the next one
-
-//TO-DO:
-//Decide how many transporters/builders to make depending on creep colony state(maybe tied to number of extensions/room.energyCapacity)
-//Combine transporter and builder class to be more efficient
-    // They are basically the same, could potentially just have code that changes the memory.role of the creep to be one or the other based on needs
-//Serialize path to each source to improve CPU usage
-//Upgraders?
-//  Maybe check if I have enough energy in my storage to upgrade my Controller, and if so, spawn a bunch of upgrader creeps to quickly get it done, and then kill them off to save CPU

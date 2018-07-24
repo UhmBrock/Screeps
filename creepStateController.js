@@ -1,9 +1,3 @@
-//idea: while this is moving between targets, have them check if they are in range to repair a structure
-// since they can repair and move in the same turn
-
-// Need to just remove transporters and builders and createa  worker role that is a hybrid of the two.
-// They are just artifacts of not having STATEs before.
-
 Creep.prototype.runState = function() 
 {
     let target = Game.getObjectById(this.memory.targetID);

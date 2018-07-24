@@ -9,17 +9,31 @@ module.exports = {
             
             let source = Game.getObjectById(creep.memory.targetID);
             
+                
             if(creep.harvest(source) == ERR_NOT_IN_RANGE){
-                if(creep.moveTo(source) == 0)
+                
+                let moveTarget;
+                
+                
+                if(source.room.memory.sources)
+                    moveTarget = Game.getObjectById(source.room.memory.sources[source.id].container);
+                    
+                if(moveTarget == null)
+                    moveTarget = source;
+                
+                if(creep.moveTo(moveTarget) == 0)
                     creep.memory.ticksToSource++;
             }
-            else{
+            else if(creep.harvest(source) == 0){
                 if(creep.carry[RESOURCE_ENERGY] >= 25)
                     this.maintainContainer(creep, source);
             }
+            else{
+                creep.memory.targetID = null;
+            }
         }
         
-        else if( creep.chooseSource(creep.room) ) {
+        else if( creep.chooseSource(Game.rooms[creep.memory.home]) ) {
             
             let source = Game.getObjectById(creep.memory.targetID);
             
@@ -31,7 +45,7 @@ module.exports = {
         }
         
         else{
-            if(creep.memory.targetRoom == creep.room.name){
+            if(creep.memory.targetRoom == creep.memory.home){
                 creep.findRemoteHarvestRoom();
             }
             else{

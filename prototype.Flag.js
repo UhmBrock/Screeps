@@ -25,7 +25,7 @@ Flag.prototype.isOwned = function() {
 Flag.prototype.warriorsNeeded = function() {
     if(this.isVisible()){
         let warriorsTargeting = this.room.creepCount(["warriors"], true)["warriors"];
-        let enemies = this.room.find(FIND_HOSTILE_CREEPS);
+        let enemies = this.room.find(FIND_HOSTILE_CREEPS).length;
         
         return Math.ceil(enemies/2) - warriorsTargeting;
     }
@@ -54,7 +54,9 @@ Flag.prototype.remoteHarvestersNeeded = function() {
     if(this.isVisible()){
         let harvestersTargeting = this.room.creepCount(["remoteHarvesters"], true)["remoteHarvesters"];
         
-        numNeeded = (this.room.memory.creepLimits["staticMiners"] * 3) - harvestersTargeting;
+        //this way we don't spawn any until the miners have built their containers
+        numNeeded = (this.room.memory.structures.containers.length * 3) - harvestersTargeting;
+        //numNeeded = (this.room.memory.creepLimits["staticMiners"] * 3) - harvestersTargeting;
         
         if(numNeeded >= 0){
             return numNeeded;
@@ -73,6 +75,11 @@ Flag.prototype.claimersNeeded = function() {
         return 0;
     }
     else{
-        return 1 - _.filter(Memory.roles.claimers, name => Game.creeps[name].memory.targetRoom == this.pos.roomName).length;
+        let numNeeded = 1 - _.filter(Memory.roles.claimers, name => Game.creeps[name].memory.targetRoom == this.pos.roomName).length;
+        
+        if(numNeeded > 0 )
+            return numNeeded;
+        else
+            return 0;
     }
 }

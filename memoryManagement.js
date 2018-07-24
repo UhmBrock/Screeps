@@ -6,6 +6,8 @@ module.exports = {
     
     run: function (room) {
     
+        this.initStats();
+        
         this.initPathMemory();
         
         this.initRoomMemory(room);
@@ -39,6 +41,11 @@ module.exports = {
                   // Initialize Memory //
     //--------------------------------------------------//
 
+    initStats: function() {
+        if(!Memory.stats) { 
+            Memory.stats = {}; 
+        }   
+    },
     
     initPathMemory: function() {
         
@@ -141,23 +148,11 @@ module.exports = {
                 return walkablePos;
 
             });
-
-
-
-            //object put into memory
-            let sourceObject = [];
-
-            /*
-            for(let i = 0; i < sources.length; i++){
-                sourceObject.push({sourceID: sourceId[i], accessTiles: accessTiles[i] });
-            }
-            */
             
             for(let i = 0; i < sources.length; i++){
                 room.memory.sources[sourceId[i]] = { accessTiles: accessTiles[i] };
             }
             
-            //room.memory.sources = sourceObject;
         }
     },
 
@@ -222,12 +217,12 @@ module.exports = {
                 
                 if(Game.rooms[flag.pos.roomName] != undefined){
                     //console.log("Testing 228: " + flag.pos.roomName + ": " + JSON.stringify(Game.rooms[flag.pos.roomName].memory));
-                    if(Game.rooms[flag.pos.roomName].memory.structures != undefined && Game.rooms[flag.pos.roomName].memory.structures.spawners.length == 0){
-                        return true;
-                    }
-                    else{
+                    if(Game.rooms[flag.pos.roomName].memory.structures.spawners.length > 0){
                         flag.remove();
                         return false;
+                    }
+                    else{
+                        return true;
                     }
                 }
             });
